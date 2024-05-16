@@ -2,18 +2,16 @@ import express from "express";
 import db from "@repo/db";
 import jwt from "jsonwebtoken"
 import * as dotenv from 'dotenv';
+import { createClient } from "redis";
 dotenv.config();
 
 const app = express();
+const client = createClient();
+client.on('error', (err) => console.log('Redis Client Error', err));
 app.use(express.json())
 
 app.post('/login', async (req, res) => {
  const { email, password } = req.body;
- console.log(process.env.JWT_SECRET);
-
- // console.log(req.body.email);
- // console.log(req.body.password);
- // console.log(process.env.JWT_SECRET);
  const user = await db.user.findFirst({
   where: {
    email: email,
@@ -116,6 +114,30 @@ app.get('/get-problem/:id', async (req, res) => {
 
  return res.status(200).json(problem);
 
+})
+
+async function startServer() {
+ try {
+  await client.connect();
+  console.log("connected to redis");
+ }
+ catch (error) {
+  console.error("Failed to connect to Redis", error);
+ }
+}
+startServer();
+
+
+app.post('/submit', async (req, res) => {
+ const { userId, problemId, code, testcases } = req.body;
+ try {
+  await client.lPush("submissions", JSON.stringify({ userId,problemId,code,testcases }));
+  // Store in the database
+  res.status(200).send("Submission received and stored.");
+ } catch (error) {
+  console.error("Redis error:", error);
+  res.status(500).send("Failed to store submission.");
+ }
 })
 
 app.listen(8000, () => {

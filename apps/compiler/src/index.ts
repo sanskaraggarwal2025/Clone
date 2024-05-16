@@ -1,13 +1,29 @@
 import express from "express";
 import db from "@repo/db";
 import { node } from "compile-run";
+import { createClient } from "redis";
+const client = createClient();
 
-const app = express();
-const PORT = 8001;
 
-app.use(express.json());
 
-async function runTestCases(code: any, testcases: any) {
+// app.post('/execute', async (req, res) => {
+//  const { userId, problemId, code, testcases } = req.body;
+
+//  const results = await runTestCases(code, testcases);
+
+//  const newSubmission = await db.submission.create({
+//   data: {
+//    code: code,
+//    userId: userId,
+//    problemId: problemId
+//   }
+//  })
+
+//  res.json(results);
+// });
+
+async function runTestCases(submission: any) {
+ const { code, testcases } = JSON.parse(submission);
  const outputs = [];
  for (let key in testcases) {
   const { input, expectedOutput } = testcases[key];
@@ -35,29 +51,34 @@ async function runTestCases(code: any, testcases: any) {
    console.error('Error occurred:', err);
   }
  }
+ console.log(outputs);
+
 
  return outputs;
 }
 
-app.post('/execute', async (req, res) => {
- const { userId, problemId, code, testcases } = req.body;
+async function startWorker() {
+ try {
+  await client.connect();
+  console.log('worker connected to redis');
 
- const results = await runTestCases(code, testcases);
+  while (1) {
+   try {
+    const submission = await client.brPop("submissions", 0);
+    await runTestCases(submission?.element);
+   }
+   catch (err) {
+    console.log('error processing submission', err);
 
- const newSubmission = await db.submission.create({
-  data: {
-   code: code,
-   userId: userId,
-   problemId: problemId
+   }
   }
- })
 
- res.json(results);
-});
-
-app.listen(PORT, () => {
- console.log(`Server is running on port ${PORT}`);
-});
+ }
+ catch (error) {
+  console.error("Failed to connect to Redis", error);
+ }
+}
+startWorker();
 
 
 

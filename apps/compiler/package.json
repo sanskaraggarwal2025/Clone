@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "compile-run": "^2.3.4"
+    "compile-run": "^2.3.4",
+    "redis": "^4.6.13"
   }
 }
