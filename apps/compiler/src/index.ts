@@ -66,6 +66,7 @@ async function startWorker() {
    try {
     const submission = await client.brPop("submissions", 0);
     await runTestCases(submission?.element);
+
    }
    catch (err) {
     console.log('error processing submission', err);
@@ -79,6 +80,7 @@ async function startWorker() {
  }
 }
 startWorker();
+
 
 
 

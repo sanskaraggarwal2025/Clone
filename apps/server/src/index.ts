@@ -1,14 +1,17 @@
 import express from "express";
 import db from "@repo/db";
 import jwt from "jsonwebtoken"
+import cors from "cors"
 import * as dotenv from 'dotenv';
 import { createClient } from "redis";
 dotenv.config();
 
 const app = express();
+
 const client = createClient();
 client.on('error', (err) => console.log('Redis Client Error', err));
 app.use(express.json())
+app.use(cors());
 
 app.post('/login', async (req, res) => {
  const { email, password } = req.body;
@@ -37,8 +40,6 @@ app.post('/login', async (req, res) => {
 
 app.post('/signup', async (req, res) => {
  const { name, email, phone, password } = req.body;
- console.log(process.env.JWT_SECRET);
-
 
  if (!email || !password || !name || !phone) {
   return res.status(411).send("All fields are mandatory");
@@ -75,12 +76,13 @@ app.post('/signup', async (req, res) => {
 })
 
 app.post('/create-problem', async (req, res) => {
- const { description, example } = req.body;
+ const { description, testcases,title } = req.body;
 
  const newProblem = await db.problem.create({
   data: {
+   title:title,
    description: description,
-   example: example,
+   testcases: testcases,
   }
  })
 
@@ -127,11 +129,12 @@ async function startServer() {
 }
 startServer();
 
+//cmd to start redis -> docker run --name my-redis -d -p 6379:6379 redis
 
 app.post('/submit', async (req, res) => {
  const { userId, problemId, code, testcases } = req.body;
  try {
-  await client.lPush("submissions", JSON.stringify({ userId,problemId,code,testcases }));
+  await client.lPush("submissions", JSON.stringify({ userId, problemId, code, testcases }));
   // Store in the database
   res.status(200).send("Submission received and stored.");
  } catch (error) {
