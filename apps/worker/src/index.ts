@@ -2,11 +2,13 @@ import express from "express";
 import db from "@repo/db";
 import { node } from "compile-run";
 import { createClient } from "redis";
+
 const client = createClient();
+const pubClient = createClient();
 
 
 async function runTestCases(submission: any) {
- const { code, testcases } = JSON.parse(submission);
+ const { code, testcases,userId } = JSON.parse(submission);
  const outputs = [];
  // console.log(code);
  // console.log(testcases);
@@ -31,7 +33,7 @@ async function runTestCases(submission: any) {
    console.log(actualOutput);
 
    // Function to trim and remove whitespace from a string
-   function cleanString(str:string) {
+   function cleanString(str: string) {
     return str.replace(/\s+/g, '');
    }
 
@@ -51,6 +53,10 @@ async function runTestCases(submission: any) {
   }
  }
  console.log(outputs);
+
+ const resultMessage = JSON.stringify({userId,results:outputs});
+
+ await pubClient.publish('testcase_results', resultMessage);
 
 
  return outputs;
