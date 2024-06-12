@@ -5,23 +5,6 @@ import { createClient } from "redis";
 const client = createClient();
 
 
-
-// app.post('/execute', async (req, res) => {
-//  const { userId, problemId, code, testcases } = req.body;
-
-//  const results = await runTestCases(code, testcases);
-
-//  const newSubmission = await db.submission.create({
-//   data: {
-//    code: code,
-//    userId: userId,
-//    problemId: problemId
-//   }
-//  })
-
-//  res.json(results);
-// });
-
 async function runTestCases(submission: any) {
  const { code, testcases } = JSON.parse(submission);
  const outputs = [];
@@ -49,6 +32,7 @@ async function runTestCases(submission: any) {
    });
   } catch (err) {
    console.error('Error occurred:', err);
+   
   }
  }
  console.log(outputs);
@@ -88,7 +72,7 @@ startWorker();
 // {
 //  "userId": 1,
 //   "problemId": 1,
-//    "code": "function func(a,b){return a+b;}",
+//    "code": " ",
 //     "testcases": {
 //   "testcase1": {
 //    "input": "12 2",

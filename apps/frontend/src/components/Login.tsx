@@ -18,6 +18,7 @@ const Login = () => {
    password:data.password
   })
   localStorage.setItem("token",res.data.token);
+  localStorage.setItem("userId",res.data.userId);
   console.log(res.data.msg);
   
  }

@@ -29,10 +29,11 @@ app.post('/login', async (req, res) => {
   return res.status(411).send('Invalid Credentials');
  }
 
- const jwtToken = jwt.sign({ email: email }, process.env.JWT_SECRET as string);
+ const jwtToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string);
 
  return res.status(200).json({
   msg: 'User LoggedIn',
+  userId: user.id,
   token: jwtToken
  });
 
@@ -68,19 +69,20 @@ app.post('/signup', async (req, res) => {
   }
  })
 
- const token = jwt.sign({ email: email }, process.env.JWT_SECRET as string);
+ const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET as string);
  return res.status(200).json({
   msg: "User Created",
+  userId: newUser.id,
   token: token
  })
 })
 
 app.post('/create-problem', async (req, res) => {
- const { description, testcases,title } = req.body;
+ const { description, testcases, title } = req.body;
 
  const newProblem = await db.problem.create({
   data: {
-   title:title,
+   title: title,
    description: description,
    testcases: testcases,
   }
@@ -132,9 +134,31 @@ startServer();
 //cmd to start redis -> docker run --name my-redis -d -p 6379:6379 redis
 
 app.post('/submit', async (req, res) => {
- const { userId, problemId, code, testcases } = req.body;
+ const { userId, problemId, code } = req.body;
+ let problemIdInt = +problemId;
+ let userIdInt = +userId;
+ const problem = await db.problem.findFirst({
+  where: {
+   id: problemIdInt
+  }
+ })
+
+ if (!problem) {
+  return res.status(404).send("Problem not found");
+ }
+
+ const { testcases } = problem;
+
  try {
   await client.lPush("submissions", JSON.stringify({ userId, problemId, code, testcases }));
+
+  await db.submission.create({
+   data: {
+    userId: userIdInt,
+    problemId: problemIdInt,
+    code,
+   }
+  });
   // Store in the database
   res.status(200).send("Submission received and stored.");
  } catch (error) {

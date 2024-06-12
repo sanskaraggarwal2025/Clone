@@ -24,6 +24,7 @@ const Signup = () => {
   })
 
   localStorage.setItem('token', res.data.token);
+  localStorage.setItem('userId', res.data.userId);
   console.log('user signed up');
   console.log(res.data.token);
 
