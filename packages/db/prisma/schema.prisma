@@ -20,7 +20,7 @@ model User {
 model Problem {
   id          Int           @id @default(autoincrement())
   description String       
-  title       String
+  title       String?
   testcases   Json          @default("{}")
   submissions Submission[]
 }

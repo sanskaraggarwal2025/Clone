@@ -4,7 +4,6 @@ import Skeleton from './Skeleton';
 
 const Problems = () => {
   const { loading, problems } = useProblems();
-  console.log(problems);
 
   if (loading) {
     return <Skeleton />;

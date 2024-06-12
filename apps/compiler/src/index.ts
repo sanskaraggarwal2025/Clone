@@ -8,21 +8,37 @@ const client = createClient();
 async function runTestCases(submission: any) {
  const { code, testcases } = JSON.parse(submission);
  const outputs = [];
+ // console.log(code);
+ // console.log(testcases);
+
+
  for (let key in testcases) {
   const { input, expectedOutput } = testcases[key];
   const [inputArrayStr, inputNumberStr] = input.split(/\s+/);
 
   const inputArray = JSON.parse(inputArrayStr);
+  console.log(inputArray);
   const inputNumber = parseInt(inputNumberStr);
+  console.log(inputNumber);
 
   const codeWithTestcase = `${code}; let ans = func(${JSON.stringify(inputArray)},${inputNumber}); console.log(ans)`;
+  console.log(codeWithTestcase);
 
   try {
    const result = await node.runSource(codeWithTestcase);
 
    const actualOutput = result.stdout.trim();
+   console.log(actualOutput);
 
-   const passed = actualOutput === expectedOutput;
+   // Function to trim and remove whitespace from a string
+   function cleanString(str:string) {
+    return str.replace(/\s+/g, '');
+   }
+
+   const cleanedExpectedOutput = cleanString(expectedOutput);
+   const cleanedActualOutput = cleanString(actualOutput);
+
+   const passed = cleanedActualOutput === cleanedExpectedOutput;
 
    outputs.push({
     key: key,
@@ -32,7 +48,6 @@ async function runTestCases(submission: any) {
    });
   } catch (err) {
    console.error('Error occurred:', err);
-   
   }
  }
  console.log(outputs);
@@ -48,6 +63,7 @@ async function startWorker() {
 
   while (1) {
    try {
+    console.log("redis is starting to run the code");
     const submission = await client.brPop("submissions", 0);
     await runTestCases(submission?.element);
 
