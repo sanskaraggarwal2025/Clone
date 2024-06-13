@@ -1,4 +1,5 @@
 import { useForm, SubmitHandler } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 interface signupType {
@@ -10,6 +11,9 @@ interface signupType {
 
 const Signup = () => {
   const { register, handleSubmit } = useForm<signupType>();
+  const navigate = useNavigate();
+
+
 
   const onSubmit: SubmitHandler<signupType> = async (data: signupType) => {
     let res = await axios.post(`http://localhost:8000/signup`, {
@@ -25,6 +29,10 @@ const Signup = () => {
 
     localStorage.setItem('token', res.data.token);
     localStorage.setItem('userId', res.data.userId);
+
+    if (res) {
+      navigate('/all-problems');
+    }
     console.log('user signed up');
     console.log(res.data.token);
   }
@@ -73,6 +81,9 @@ const Signup = () => {
           />
         </div>
         <div className="text-center">
+          <Link to="/login">
+            <p className="text-gray-400 pb-2">Already have an account?LogIn</p>
+          </Link>
           <button
             type="submit"
             className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-700"

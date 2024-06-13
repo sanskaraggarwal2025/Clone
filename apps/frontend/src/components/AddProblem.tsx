@@ -9,12 +9,6 @@ const AddProblem = () => {
   const [content, setContent] = useState<string>('');
   const [testcases, setTestcases] = useState<Array<{ input: string, expectedOutput: string }>>([{ input: '', expectedOutput: '' }]);
 
-  const stripHtml = (html: string): string => {
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    return div.textContent || div.innerText || '';
-  };
-
   const handleSubmit = async () => {
     const formattedTestcases = testcases.reduce((acc, testcase, index) => {
       acc[`testcase${index + 1}`] = testcase;
@@ -23,7 +17,7 @@ const AddProblem = () => {
 
     const payload = {
       title,
-      description: stripHtml(content), // Strip HTML tags here
+      description: content,  
       testcases: formattedTestcases,
     };
 

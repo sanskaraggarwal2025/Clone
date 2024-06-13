@@ -5,9 +5,9 @@ interface CodeEditorProps {
   onCodeChange: (code: string) => void;
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({onCodeChange}) => {
- const [code, setCode] = useState<string>('');
- const textareaRef = useRef<HTMLTextAreaElement>(null);
+const CodeEditor: React.FC<CodeEditorProps> = ({ onCodeChange }) => {
+  const [code, setCode] = useState<string>('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const newCode = event.target.value;
@@ -15,52 +15,52 @@ const CodeEditor: React.FC<CodeEditorProps> = ({onCodeChange}) => {
     onCodeChange(newCode);
   };
 
- const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-  if (event.key === 'Enter') {
-   const value = event.currentTarget.value;
-   const cursorPosition = event.currentTarget.selectionStart;
-   const textBeforeCursor = value.substring(0, cursorPosition);
-   const textAfterCursor = value.substring(cursorPosition);
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter') {
+      const value = event.currentTarget.value;
+      const cursorPosition = event.currentTarget.selectionStart;
+      const textBeforeCursor = value.substring(0, cursorPosition);
+      const textAfterCursor = value.substring(cursorPosition);
 
-   // Check for shortcuts
-   if (textBeforeCursor.endsWith('log')) {
-    event.preventDefault();
-    insertShortcut(
-     cursorPosition,
-     textBeforeCursor,
-     textAfterCursor,
-     'console.log()',
-     'log'.length,
-     'console.log('.length
-    );
-   }
+      // Check for shortcuts
+      if (textBeforeCursor.endsWith('log')) {
+        event.preventDefault();
+        insertShortcut(
+          cursorPosition,
+          textBeforeCursor,
+          textAfterCursor,
+          'console.log()',
+          'log'.length,
+          'console.log('.length
+        );
+      }
 
-   
-  }
- };
 
- const insertShortcut = (
-  cursorPosition: number,
-  textBeforeCursor: string,
-  textAfterCursor: string,
-  shortcut: string,
-  lengthToCut: number,
-  start: number,
-  end?: number
- ) => {
-  const newCode = `${textBeforeCursor.slice(0, -lengthToCut)}${shortcut}${textAfterCursor}`;
-  setCode(newCode);
+    }
+  };
 
-  // Set cursor position
-  setTimeout(() => {
-   if (textareaRef.current) {
-    textareaRef.current.selectionStart = cursorPosition - lengthToCut + start;
-    textareaRef.current.selectionEnd = end ? cursorPosition - lengthToCut + end : cursorPosition - lengthToCut + start;
-   }
-  }, 0);
- };
+  const insertShortcut = (
+    cursorPosition: number,
+    textBeforeCursor: string,
+    textAfterCursor: string,
+    shortcut: string,
+    lengthToCut: number,
+    start: number,
+    end?: number
+  ) => {
+    const newCode = `${textBeforeCursor.slice(0, -lengthToCut)}${shortcut}${textAfterCursor}`;
+    setCode(newCode);
 
- 
+    // Set cursor position
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.selectionStart = cursorPosition - lengthToCut + start;
+        textareaRef.current.selectionEnd = end ? cursorPosition - lengthToCut + end : cursorPosition - lengthToCut + start;
+      }
+    }, 0);
+  };
+
+
 
   return (
     <div className="relative w-full h-[500px] bg-gray-800 rounded-md shadow-md">

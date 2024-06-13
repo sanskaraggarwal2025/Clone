@@ -5,6 +5,7 @@ import CodeEditor from './CodeEditor';
 import axios from 'axios';
 import { BACKEND_URL } from '../Config';
 import Modal from './Modal';
+import DOMPurify from 'dompurify';
 
 const ProblemDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -52,7 +53,7 @@ const ProblemDetail = () => {
       if (fetchedProblem) {
         setProblem(fetchedProblem);
       } else {
-        navigate('/'); // Redirect if the problem doesn't exist
+        navigate('/all-problems'); // Redirect if the problem doesn't exist
       }
     }
   }, [id, problem, problems, loading, navigate]);
@@ -88,11 +89,16 @@ const ProblemDetail = () => {
     return <p className="text-white">Loading...</p>; // Or you can render a loading indicator or a message
   }
 
+  const sanitizedDescription = DOMPurify.sanitize(problem.description);
+
   return (
     <div className='flex justify-between h-screen bg-gray-900 text-white p-6'>
-      <div className="problem-detail w-1/2 p-4 bg-gray-800 rounded-md shadow-md">
+      <div className="problem-detail w-1/2 p-4  bg-gray-800 rounded-md shadow-md overflow-y-auto max-h-screen">
         <h1 className="text-2xl font-bold mb-4">{problem.title}</h1>
-        <p className="text-gray-300">{problem.description}</p>
+        <div
+          className="text-gray-300 max-h-96 overflow-y-auto custom-scrollbar"
+          dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+        />
       </div>
       <div className="w-1/2 px-1">
         <div className="w-full h-full bg-gray-800 p-4 rounded-md shadow-md flex flex-col">

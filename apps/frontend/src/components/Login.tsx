@@ -1,6 +1,6 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import axios from "axios";
-
+import { Link, useNavigate } from "react-router-dom";
 interface loginType {
  email: string;
  password: string;
@@ -8,6 +8,8 @@ interface loginType {
 
 const Login = () => {
  const { register, handleSubmit } = useForm<loginType>();
+ const navigate = useNavigate();
+
 
  const onSubmit: SubmitHandler<loginType> = async (data: loginType) => {
   console.log(data);
@@ -19,6 +21,10 @@ const Login = () => {
   });
   localStorage.setItem("token", res.data.token);
   localStorage.setItem("userId", res.data.userId);
+
+  if(res){
+   navigate('/all-problems');
+  }
   console.log(res.data.msg);
  };
 
@@ -48,6 +54,9 @@ const Login = () => {
      />
     </div>
     <div className="text-center">
+     <Link to = "/signup">
+     <p className="text-gray-400 pb-2">Don't have an account?SignUp</p>
+     </Link>
      <button
       type="submit"
       className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-700"
@@ -61,3 +70,10 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
+
+
+
+
