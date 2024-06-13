@@ -35,28 +35,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({onCodeChange}) => {
     );
    }
 
-   if (textBeforeCursor.endsWith('rafce')) {
-    event.preventDefault();
-    const componentTemplate = `import React from 'react';
-
-const ComponentName = () => {
-  return (
-    <div>test</div>
-  )
-}
-
-export default ComponentName
-`;
-    insertShortcut(
-     cursorPosition,
-     textBeforeCursor,
-     textAfterCursor,
-     componentTemplate,
-     'rafce'.length,
-     componentTemplate.indexOf('ComponentName'),
-     componentTemplate.indexOf('ComponentName') + 'ComponentName'.length
-    );
-   }
+   
   }
  };
 
@@ -84,7 +63,7 @@ export default ComponentName
  
 
   return (
-    <div className="relative w-full h-[500px]">
+    <div className="relative w-full h-[500px] bg-gray-800 rounded-md shadow-md">
       <textarea
         ref={textareaRef}
         value={code}
@@ -105,7 +84,7 @@ export default ComponentName
           font-mono
           leading-snug
           border
-          border-gray-300
+          border-gray-700
           rounded-md
           outline-none
           resize-none
@@ -118,7 +97,7 @@ export default ComponentName
           break-words
         "
       />
-      <div className="absolute top-0 left-0 pointer-events-none z-0 w-full h-full p-2.5 box-border overflow-hidden text-black text-sm font-mono leading-snug whitespace-pre-wrap break-words bg-transparent">
+      <div className="absolute top-0 left-0 pointer-events-none z-0 w-full h-full p-2.5 box-border overflow-hidden text-white text-sm font-mono leading-snug whitespace-pre-wrap break-words bg-transparent">
         <Highlight code={code} />
       </div>
     </div>

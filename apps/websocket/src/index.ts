@@ -13,6 +13,8 @@ async function startWebSocketServer() {
 
  subClient.subscribe('testcase_results', (message) => {
   const { userId, results } = JSON.parse(message);
+  console.log(message);
+
   const userSocket = userConnection.get(userId);
 
   if (userSocket && userSocket.readyState === userSocket.OPEN) {
@@ -24,8 +26,12 @@ async function startWebSocketServer() {
   console.log('Client connected');
 
   ws.on('message', (message) => {
+
+
    const { userId } = JSON.parse(message.toString());
    userConnection.set(userId, ws);
+   console.log('gya kya');
+
   })
 
   ws.on('close', () => {
