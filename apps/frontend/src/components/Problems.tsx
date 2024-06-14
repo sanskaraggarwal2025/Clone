@@ -6,6 +6,7 @@ const Problems = () => {
   const { loading, problems } = useProblems();
 
   return (
+    <>
     <div className="min-h-screen flex justify-center bg-gray-900 text-white p-6">
       <div className="w-full max-w-xl">
         {loading ? (
@@ -27,6 +28,7 @@ const Problems = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 
