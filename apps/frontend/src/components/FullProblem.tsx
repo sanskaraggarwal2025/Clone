@@ -6,6 +6,7 @@ import axios from 'axios';
 import { BACKEND_URL } from '../Config';
 import Modal from './Modal';
 import DOMPurify from 'dompurify';
+import Navbar from './Navbar';
 
 const ProblemDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -92,26 +93,33 @@ const ProblemDetail = () => {
   const sanitizedDescription = DOMPurify.sanitize(problem.description);
 
   return (
-    <div className='flex justify-between h-screen bg-gray-900 text-white p-6'>
-      <div className="problem-detail w-1/2 p-4  bg-gray-800 rounded-md shadow-md overflow-y-auto max-h-screen">
-        <h1 className="text-2xl font-bold mb-4">{problem.title}</h1>
-        <div
-          className="text-gray-300 max-h-96 overflow-y-auto custom-scrollbar"
-          dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
-        />
-      </div>
-      <div className="w-1/2 px-1">
-        <div className="w-full h-full bg-gray-800 p-4 rounded-md shadow-md flex flex-col">
-          <div className="flex-grow">
+    <>
+      <Navbar />
+      <div className="flex flex-col h-screen bg-gray-900 text-white overflow-hidden">
+        <div className="flex flex-grow overflow-hidden mb-8 px-4">
+          <div className="flex flex-col w-1/2 p-6 bg-gray-800 rounded-md shadow-md overflow-y-auto">
+            <h1 className="text-2xl font-bold mb-4">{problem.title}</h1>
+            <div
+              className="text-gray-300 max-h-full overflow-y-auto"
+              dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+            />
+          </div>
+          
+          <div className="flex flex-col w-1/2 p-6 ml-2 bg-gray-800 rounded-md shadow-md overflow-y-auto">
+            <div className="flex-grow overflow-auto">
             <CodeEditor onCodeChange={handleCodeChange} />
           </div>
-          <button
-            type="submit"
-            className='mt-4 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-700 self-end'
-            onClick={handleClick}
-          >
-            Submit
-          </button>
+
+            <div className="flex justify-end mt-4">
+              <button
+                type="submit"
+                className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-700"
+                onClick={handleClick}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -133,7 +141,7 @@ const ProblemDetail = () => {
           </button>
         </Modal>
       )}
-    </div>
+    </>
   );
 };
 

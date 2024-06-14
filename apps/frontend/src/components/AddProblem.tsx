@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
 import JoditEditor from "jodit-react";
 import axios from "axios";
-import 'tailwindcss/tailwind.css';
-
+import Navbar from "./Navbar";
+import { BACKEND_URL } from "../Config";
 const AddProblem = () => {
   const editor = useRef(null);
   const [title, setTitle] = useState<string>('');
@@ -22,8 +22,14 @@ const AddProblem = () => {
     };
 
     try {
-      const res = await axios.post('http://localhost:8000/create-problem', payload);
+      const res = await axios.post(`${BACKEND_URL}/create-problem`, payload);
+
       console.log('Response:', res.data);
+
+      setContent('');
+      setTestcases([{ input: '', expectedOutput: '' }]);
+      setTitle('');
+
     } catch (error) {
       console.error('Error:', error);
     }
@@ -40,7 +46,9 @@ const AddProblem = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gray-900 text-white p-6">
+    <>
+    <Navbar />
+        <div className="min-h-screen flex flex-col items-center bg-gray-900 text-white p-6">
       <div className="flex flex-col w-full max-w-xl">
         <label className="required mb-2">Title</label>
         <input
@@ -108,6 +116,8 @@ const AddProblem = () => {
         </button>
       </div>
     </div>
+    </>
+
   );
 };
 

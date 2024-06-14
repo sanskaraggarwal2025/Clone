@@ -1,12 +1,14 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../Config";
 interface loginType {
  email: string;
  password: string;
 }
 
 const Login = () => {
+ 
  const { register, handleSubmit } = useForm<loginType>();
  const navigate = useNavigate();
 
@@ -15,12 +17,15 @@ const Login = () => {
   console.log(data);
   console.log(data.email);
   console.log(data.password);
-  let res = await axios.post(`http://localhost:8000/login`, {
+  let res = await axios.post(`${BACKEND_URL}/login`, {
    email: data.email,
    password: data.password,
   });
+
   localStorage.setItem("token", res.data.token);
   localStorage.setItem("userId", res.data.userId);
+
+
 
   if(res){
    navigate('/all-problems');
@@ -29,7 +34,8 @@ const Login = () => {
  };
 
  return (
-  <div className="min-h-screen flex items-center justify-center bg-gray-900">
+  <>
+  <div className="min-h-screen flex items-center justify-center bg-gray-900 ">
    <form
     onSubmit={handleSubmit(onSubmit)}
     className="bg-gray-800 p-6 rounded shadow-md w-full max-w-sm"
@@ -66,6 +72,7 @@ const Login = () => {
     </div>
    </form>
   </div>
+  </>
  );
 };
 
