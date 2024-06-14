@@ -20,4 +20,9 @@ This project is a LeetCode clone that allows users to sign up, log in, add probl
 - **Caching & Queuing**: Redis
 - **Real-Time Communication**: WebSockets (using Pub/Sub with Redis)
 
+## Architecture
+<img width="797" alt="LeetCode-Clone" src="https://github.com/sanskaraggarwal2025/Leetcode-Clone/assets/77196160/d04347c9-5ae4-404e-b20d-8ba5a5a3c220">
+
+
+
 
